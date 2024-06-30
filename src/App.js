@@ -3,6 +3,7 @@ import "./App.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Home from "./components/Home";
+import Ticker from "./components/Ticker";
 
 function App() {
   // menu 구분용
@@ -28,6 +29,7 @@ function App() {
   return (
     <div className="App">
       <Header active={active} setActive={setActive} />
+      <Ticker />
       {getContent()}
       <Footer />
     </div>
@@ -35,3 +37,4 @@ function App() {
 }
 
 export default App;
+

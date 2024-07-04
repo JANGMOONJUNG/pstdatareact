@@ -1,0 +1,41 @@
+/* Status.css */
+
+#container_status {
+  display: flex;
+  height: 760px;
+}
+
+#sideBar {
+  width: 200px;
+  background-color: #f4f4f4;
+  padding: 10px;
+}
+
+.side-navigation ul {
+  list-style-type: none;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  margin: 0;
+}
+
+.side-navigation li {
+  margin-bottom: 10px;
+  cursor: pointer;
+  color: #333;
+}
+
+.side-navigation li:hover {
+  color: #007bff;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.side_active {
+  background-color: #007bff;
+}

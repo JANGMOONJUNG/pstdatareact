@@ -1,6 +1,31 @@
 // src/components/Ticker.js
 import React, { useEffect, useState } from "react";
-import "../css/Ticker.css";
+import styled, { keyframes } from "styled-components";
+
+const tickerAnimation = keyframes`
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+`;
+
+const TickerContainer = styled.div`
+  background-color: #222831;
+  color: #ffd369;
+  padding: 16px 0;
+  text-align: center;
+  font-weight: bold;
+  overflow: hidden;
+  position: relative;
+  white-space: nowrap;
+`;
+
+const TickerContent = styled.div`
+  display: inline-block;
+  animation: ${tickerAnimation} 10s linear infinite;
+`;
 
 const Ticker = () => {
   const [cp, setCp] = useState(0);
@@ -19,11 +44,11 @@ const Ticker = () => {
   }, []);
 
   return (
-    <div className="ticker">
-      <div>
+    <TickerContainer>
+      <TickerContent>
         금주의 PTS 검출 - CP {cp}건, LC {lc}건, SP {sp}건
-      </div>
-    </div>
+      </TickerContent>
+    </TickerContainer>
   );
 };
 

@@ -4,6 +4,8 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Ticker from "./components/Ticker";
+import Status from "./components/Status";
+import TgDgg from "./components/TgDgg";
 
 function App() {
   // menu 구분용
@@ -14,15 +16,15 @@ function App() {
       case 0:
         return <Home />;
       case 1:
-        return <div>status</div>;
+        return <Status />;
       case 2:
-        return <div>검출관리</div>;
-      case 3:
         return <div>trend분석</div>;
+      case 3:
+        return <TgDgg />;
       case 4:
-        return <div>TG DGG관리</div>;
-      case 5:
         return <div>lot trend 검색</div>;
+      default:
+        return <></>;
     }
   };
 
@@ -37,4 +39,3 @@ function App() {
 }
 
 export default App;
-

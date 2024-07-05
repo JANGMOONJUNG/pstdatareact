@@ -1,12 +1,10 @@
 // src/components/Status.js
 import React, { useState } from "react";
 import styled from "styled-components";
-import ProcessModuleRate from "./ProcessModuleRate";
-import MonthlyWeeklyRate from "./MonthlyWeeklyRate";
-import SideNavigation from "./SideNavigation";
-import InspectionManage from "./InspectionManage";
 import SideNavigation2 from "./SideNavigation2";
 import TgDggRate from "./TgDggRate";
+import TargetManagement from "./TargetManagement";
+import LimitManagement from "./LimitManagement";
 
 const ContainerStatus = styled.div`
   display: flex;
@@ -15,11 +13,13 @@ const ContainerStatus = styled.div`
 
 const SideBar = styled.div`
   width: 200px;
+  min-width: 200px;
   background-color: #f4f4f4;
 `;
 
 const Content = styled.main`
   flex-grow: 1;
+  min-width: 980px;
   padding: 40px;
 `;
 
@@ -31,9 +31,9 @@ const TgDgg = () => {
       case "tg-dgg-rate":
         return <TgDggRate />;
       case "target-managemnet":
-        return <></>;
+        return <TargetManagement />;
       case "limit-management":
-        return <></>;
+        return <LimitManagement />;
       default:
         return <></>;
     }

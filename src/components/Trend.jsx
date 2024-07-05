@@ -1,10 +1,8 @@
 // src/components/Status.js
 import React, { useState } from "react";
 import styled from "styled-components";
-import ProcessModuleRate from "./ProcessModuleRate";
-import MonthlyWeeklyRate from "./MonthlyWeeklyRate";
-import SideNavigation from "./SideNavigation";
-import InspectionManage from "./InspectionManage";
+import SideNavigation3 from "./SideNavigation3";
+import TrendStep1 from "./TrendStep1";
 
 const ContainerStatus = styled.div`
   display: flex;
@@ -19,31 +17,26 @@ const SideBar = styled.div`
 
 const Content = styled.main`
   flex-grow: 1;
+  min-width: 980px;
   padding: 40px;
 `;
 
-const Status = () => {
-  const [selectedComponent, setSelectedComponent] = useState(
-    "monthly-weekly-rate"
-  );
+const Trend = () => {
+  const [selectedComponent, setSelectedComponent] = useState("trend-step1");
 
   const renderComponent = () => {
     switch (selectedComponent) {
-      case "monthly-weekly-rate":
-        return <MonthlyWeeklyRate />;
-      case "process-module-rate":
-        return <ProcessModuleRate />;
-      case "inspection-manage":
-        return <InspectionManage />;
+      case "trend-step1":
+        return <TrendStep1 />;
       default:
-        return <MonthlyWeeklyRate />;
+        return <></>;
     }
   };
 
   return (
     <ContainerStatus>
       <SideBar>
-        <SideNavigation
+        <SideNavigation3
           select={selectedComponent}
           onSelect={setSelectedComponent}
         />
@@ -53,4 +46,4 @@ const Status = () => {
   );
 };
 
-export default Status;
+export default Trend;

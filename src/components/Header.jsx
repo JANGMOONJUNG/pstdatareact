@@ -99,7 +99,7 @@ const Header = ({ active, setActive }) => {
               className={active === 4 ? "active_menu" : ""}
               onClick={() => setActive(4)}
             >
-              관리 SPEC
+              LOT 산포이력
             </NavLink>
           </NavItem>
         </NavList>

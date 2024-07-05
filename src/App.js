@@ -6,6 +6,7 @@ import Home from "./components/Home";
 import Ticker from "./components/Ticker";
 import Status from "./components/Status";
 import TgDgg from "./components/TgDgg";
+import Trend from "./components/Trend";
 
 function App() {
   // menu 구분용
@@ -18,7 +19,7 @@ function App() {
       case 1:
         return <Status />;
       case 2:
-        return <div>trend분석</div>;
+        return <Trend />;
       case 3:
         return <TgDgg />;
       case 4:

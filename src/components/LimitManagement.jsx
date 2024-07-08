@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { LimitManageData, product_data } from "../dummyData";
 import { colorPalette } from "../color";
@@ -63,10 +63,12 @@ const ModuleFilter = styled.select`
   width: 120px;
 `;
 
-const TargetManagement = () => {
+const LimitManagement = () => {
   const [selectedProductCategory, setSelectedProductCategory] = useState("CP");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedModule, setSelectedModule] = useState("");
+
+  const [filteredData, setFilteredData] = useState(LimitManageData);
 
   const handleProductClick = (product) => {
     setSelectedProducts((prevSelectedProducts) => {
@@ -83,12 +85,16 @@ const TargetManagement = () => {
     });
   };
 
-  const filteredData = LimitManageData.filter(
-    (item) =>
-      (selectedModule ? item.Module === selectedModule : true) &&
-      (selectedProducts.includes(item["제품1"]) ||
-        selectedProducts.includes(item["제품2"]))
-  );
+  useEffect(() => {
+    setFilteredData(
+      LimitManageData.filter(
+        (item) =>
+          (selectedModule ? item.Module === selectedModule : true) &&
+          (selectedProducts.includes(item["제품1"]) ||
+            selectedProducts.includes(item["제품2"]))
+      )
+    );
+  }, [selectedModule, selectedProducts]);
 
   const uniqueModules = [
     ...new Set(LimitManageData.map((item) => item.Module)),
@@ -97,7 +103,7 @@ const TargetManagement = () => {
   return (
     <Container>
       <Header>
-        <Title>Target DGG Management</Title>
+        <Title>Limit Management</Title>
       </Header>
       <ProductList>
         {Object.keys(product_data).map((category) => (
@@ -137,10 +143,15 @@ const TargetManagement = () => {
         ))}
       </ModuleFilter>
       <Content>
-        {selectedProducts.length > 0 && <DataTable2 data={filteredData} />}
+        {selectedProducts.length > 0 && (
+          <DataTable2
+            data={filteredData}
+            key={selectedModule + filteredData.length}
+          />
+        )}
       </Content>
     </Container>
   );
 };
 
-export default TargetManagement;
+export default LimitManagement;

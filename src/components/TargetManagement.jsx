@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { product_data, TargetManageData } from "../dummyData";
 import { colorPalette } from "../color";
@@ -68,6 +68,8 @@ const TargetManagement = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedModule, setSelectedModule] = useState("");
 
+  const [filteredData, setFilteredData] = useState(TargetManageData);
+
   const handleProductClick = (product) => {
     setSelectedProducts((prevSelectedProducts) => {
       if (prevSelectedProducts.includes(product)) {
@@ -83,12 +85,16 @@ const TargetManagement = () => {
     });
   };
 
-  const filteredData = TargetManageData.filter(
-    (item) =>
-      (selectedModule ? item.Module === selectedModule : true) &&
-      (selectedProducts.includes(item["제품1"]) ||
-        selectedProducts.includes(item["제품2"]))
-  );
+  useEffect(() => {
+    setFilteredData(
+      TargetManageData.filter(
+        (item) =>
+          (selectedModule ? item.Module === selectedModule : true) &&
+          (selectedProducts.includes(item["제품1"]) ||
+            selectedProducts.includes(item["제품2"]))
+      )
+    );
+  }, [selectedModule, selectedProducts]);
 
   const uniqueModules = [
     ...new Set(TargetManageData.map((item) => item.Module)),
@@ -137,7 +143,12 @@ const TargetManagement = () => {
         ))}
       </ModuleFilter>
       <Content>
-        {selectedProducts.length > 0 && <DataTable data={filteredData} />}
+        {selectedProducts.length > 0 && (
+          <DataTable
+            data={filteredData}
+            key={selectedModule + filteredData.length}
+          />
+        )}
       </Content>
     </Container>
   );

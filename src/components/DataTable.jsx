@@ -1,39 +1,64 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { colorPalette } from "../color";
+import { FaCheck } from "react-icons/fa";
 
 const TableContainer = styled.div`
   margin-top: 20px;
   height: 400px;
-  overflow: auto;
 `;
 
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
+const ListWrapper = styled.div`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
 `;
 
-const Thead = styled.thead`
-  position: sticky;
-  top: 0;
-  background-color: #f2f2f2;
-  z-index: 1;
+const ListHeader = styled.div`
+  background-color: ${colorPalette.lightGray};
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  border-radius: 12px;
+  align-items: center;
+  height: 44px;
 `;
 
-const Th = styled.th`
-  border: 1px solid #ddd;
-  padding: 8px;
-  background-color: #f2f2f2;
+const ListContainer = styled.div`
+  height: 480px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${colorPalette.deepBlue};
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${colorPalette.lightGray};
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: ${colorPalette.darkBlue};
+  }
 `;
 
-const Td = styled.td`
-  border: 1px solid #ddd;
-  padding: 8px;
-  max-width: 240px;
-`;
-
-const Tr = styled.tr`
-  background-color: ${(props) =>
-    props.hasDifference ? "#d3d3d3" : "transparent"};
+const ListItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  height: 44px;
+  align-items: center;
+  margin-bottom: 6px;
+  border-radius: 12px;
+  font-size: 14px;
+  background-color: #f9f9f9;
 `;
 
 const ModalOverlay = styled.div`
@@ -47,7 +72,7 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
 
-  z-index: 10;
+  z-index: 1000;
 `;
 
 const ModalContent = styled.div`
@@ -85,6 +110,12 @@ const Select = styled.select`
   margin-bottom: 20px;
   border: 1px solid #ddd;
   border-radius: 4px;
+`;
+
+const ItemField = styled.div`
+  flex: 1;
+  max-width: 200px;
+  overflow: hidden;
 `;
 
 const Modal = ({
@@ -163,10 +194,15 @@ const DataTable = ({ data }) => {
   };
 
   const handleReasonClick = (row) => {
+    console.log(row);
+
+    console.log(row["DATA 판정"]);
+
     if (!row["DATA 판정"]) {
       setCurrentReason(row["사유"] || "");
       setCurrentJudgement(row["수정 된 판정"]);
       setCurrentRow(row);
+
       setModalOpen(true);
     }
   };
@@ -195,20 +231,23 @@ const DataTable = ({ data }) => {
         initialReason={currentReason}
         initialJudgement={currentJudgement}
       />
-      <Table>
-        <Thead>
-          <tr>
-            {Object.keys(tableData[0]).map((key) => (
-              <Th key={key}>{key}</Th>
-            ))}
-          </tr>
-        </Thead>
-        <tbody>
+      <ListWrapper>
+        <ListHeader>
+          {Object.keys(tableData[0]).map((key) => (
+            <ItemField key={key}>{key}</ItemField>
+          ))}
+        </ListHeader>
+        <ListContainer>
           {tableData.map((row, index) => {
             row = processRow(row); // Process the row to set "DATA 판정"
             const hasDifference = checkDifference(row);
             return (
-              <Tr key={index} hasDifference={hasDifference}>
+              <ListItem
+                key={index}
+                style={{
+                  backgroundColor: hasDifference ? "#ffe7e7" : "#f9f9f9",
+                }}
+              >
                 {Object.entries(row).map(([key, value], idx) => {
                   const isTargetDifference =
                     (key === "Target" && row.Target !== row["Target.1"]) ||
@@ -226,7 +265,7 @@ const DataTable = ({ data }) => {
                     key === "사유" ? () => handleReasonClick(row) : null;
 
                   return (
-                    <Td
+                    <ItemField
                       key={idx}
                       style={{
                         color: isDifferent
@@ -241,15 +280,25 @@ const DataTable = ({ data }) => {
                       }}
                       onClick={handleClick}
                     >
-                      {value !== null ? value.toString() : "N/A"}
-                    </Td>
+                      {value !== null ? (
+                        key === "사유" ? (
+                          <FaCheck
+                            style={{ fontSize: "14px", color: "green" }}
+                          />
+                        ) : (
+                          value.toString()
+                        )
+                      ) : (
+                        "-"
+                      )}
+                    </ItemField>
                   );
                 })}
-              </Tr>
+              </ListItem>
             );
           })}
-        </tbody>
-      </Table>
+        </ListContainer>
+      </ListWrapper>
     </TableContainer>
   );
 };

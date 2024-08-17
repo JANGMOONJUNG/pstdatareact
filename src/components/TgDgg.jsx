@@ -19,8 +19,13 @@ const SideBar = styled.div`
 
 const Content = styled.main`
   flex-grow: 1;
-  min-width: 980px;
   padding: 40px;
+
+  background-color: #e9e9e9;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const TgDgg = () => {

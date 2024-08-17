@@ -1,17 +1,17 @@
-// src/components/ChartComponent.js
-import React, { useEffect, useRef } from "react";
-import Chart from "chart.js/auto";
-import annotationPlugin from "chartjs-plugin-annotation";
+import React, { useEffect, useRef, useState } from "react";
+import "chartjs-plugin-annotation";
+import "chartjs-plugin-datalabels";
 import styled from "styled-components";
 import { product_data } from "../dummyData";
+import Chart from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels"; // ensure the plugin is imported
 
 const ChartContainer = styled.div`
   width: 100%;
-  overflow-x: auto;
 `;
 
 const ChartCanvas = styled.canvas`
-  width: 1200px;
+  width: ${(props) => props.canvasWidth}px;
   height: 400px;
 `;
 
@@ -28,16 +28,15 @@ const pastelColors = [
   "rgba(204, 229, 255, 0.6)",
 ];
 
-// 플러그인 등록
-Chart.register(annotationPlugin);
-
 const ChartComponent = ({
   activeView,
   selectedProductCategory,
   selectedProducts,
+  chartRef,
 }) => {
-  const chartRef = useRef(null);
-  const chartInstance = useRef(null);
+  //const chartRef = useRef(null);
+  const chartInstanceRef = useRef(null);
+  const [canvasWidth, setCanvasWidth] = useState(800); // 기본값 설정
 
   useEffect(() => {
     const dataOptions = product_data[selectedProductCategory]?.data;
@@ -52,6 +51,8 @@ const ChartComponent = ({
               "1"
             ),
             borderWidth: 1,
+            fill: false,
+            lineTension: 0,
           }))
         : selectedProducts.map((product, index) => ({
             label: product,
@@ -62,6 +63,8 @@ const ChartComponent = ({
               "1"
             ),
             borderWidth: 1,
+            fill: false,
+            lineTension: 0,
           }));
 
     const labels =
@@ -72,168 +75,166 @@ const ChartComponent = ({
             (_, i) => `WW${String(i + 1).padStart(2, "0")}`
           );
 
-    if (chartInstance.current) {
-      // 차트 인스턴스가 이미 존재할 경우 데이터만 업데이트
-      chartInstance.current.data.labels = labels;
-      chartInstance.current.data.datasets = datasets;
-      chartInstance.current.update();
-    } else {
-      // 차트 인스턴스가 존재하지 않을 경우 새로 생성
-      const ctx = chartRef.current.getContext("2d");
-      chartInstance.current = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: labels,
-          datasets: datasets,
-        },
-        options: {
-          scales: {
-            y: {
+    const data = {
+      labels,
+      datasets,
+    };
+
+    const options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [
+          {
+            ticks: {
               beginAtZero: true,
               max: 100,
               min: 65,
             },
           },
-          plugins: {
-            legend: {
-              display: true,
-              position: "top",
-              align: "end",
-              labels: {
-                generateLabels: function (chart) {
-                  const datasets = chart.data.datasets;
-                  const annotations =
-                    chart.options.plugins.annotation.annotations;
-                  let legendItems = datasets.map((dataset, i) => ({
-                    text: dataset.label,
-                    fillStyle: dataset.backgroundColor,
-                    strokeStyle: dataset.borderColor,
-                    lineWidth: dataset.borderWidth,
-                    hidden: !chart.isDatasetVisible(i),
-                    index: i,
-                  }));
-
-                  if (annotations) {
-                    const annotationLabels = Object.values(annotations).map(
-                      (annotation, i) => ({
-                        text: annotation.label.content,
-                        fillStyle: annotation.borderColor,
-                        strokeStyle: annotation.borderColor,
-                        lineWidth: annotation.borderWidth,
-                        hidden: false,
-                        index: datasets.length + i,
-                      })
-                    );
-                    legendItems = legendItems.concat(annotationLabels);
-                  }
-
-                  return legendItems;
-                },
-              },
-              onClick: (e, legendItem, legend) => {
-                const index = legendItem.index;
-                if (index < legend.chart.data.datasets.length) {
-                  // 데이터셋 토글
-                  legend.chart.toggleDataVisibility(index);
-                } else {
-                  // 어노테이션 토글
-                  const annotationIndex =
-                    index - legend.chart.data.datasets.length;
-                  const annotationId = Object.keys(
-                    legend.chart.options.plugins.annotation.annotations
-                  )[annotationIndex];
-                  const annotation =
-                    legend.chart.options.plugins.annotation.annotations[
-                      annotationId
-                    ];
-                  annotation.display = !annotation.display;
-                }
-                legend.chart.update();
-              },
-            },
-            tooltip: {
-              callbacks: {
-                label: function (context) {
-                  let label = context.dataset.label || "";
-
-                  if (context.raw !== null) {
-                    label += `: ${context.raw}`;
-                  }
-
-                  if (context.raw === 95) {
-                    label += " (양산이관 95%)";
-                  } else if (context.raw === 90) {
-                    label += " (CS qual 90%)";
-                  } else if (context.raw === 85) {
-                    label += " (개발 이관 85%)";
-                  }
-
-                  return label;
-                },
-              },
-            },
-            annotation: {
-              annotations: {
-                line1: {
-                  id: "line1",
-                  type: "line",
-                  yMin: 95,
-                  yMax: 95,
-                  borderColor: "rgba(75, 192, 192, 0.4)",
-                  borderWidth: 2,
-                  label: {
-                    content: "양산이관 95%",
-                    enabled: true,
-                    position: "end",
-                  },
-                },
-                line2: {
-                  id: "line2",
-                  type: "line",
-                  yMin: 90,
-                  yMax: 90,
-                  borderColor: "rgba(192, 75, 192, 0.4)",
-                  borderWidth: 2,
-                  label: {
-                    content: "CS qual 90%",
-                    enabled: true,
-                    position: "end",
-                  },
-                },
-                line3: {
-                  id: "line3",
-                  type: "line",
-                  yMin: 85,
-                  yMax: 85,
-                  borderColor: "rgba(192, 192, 75, 0.4)",
-                  borderWidth: 2,
-                  label: {
-                    content: "개발 이관 85%",
-                    enabled: true,
-                    position: "end",
-                  },
-                },
-              },
+        ],
+      },
+      annotation: {
+        annotations: [
+          {
+            id: "line1",
+            type: "line",
+            mode: "horizontal",
+            scaleID: "y-axis-0",
+            value: 95,
+            borderColor: "rgba(75, 192, 192, 0.4)",
+            borderWidth: 2,
+            label: {
+              content: "양산이관 95%",
+              enabled: true,
+              position: "left",
+              xAdjust: 5,
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
             },
           },
-        },
-      });
-    }
-  }, [activeView, selectedProductCategory, selectedProducts]);
+          {
+            id: "line2",
+            type: "line",
+            mode: "horizontal",
+            scaleID: "y-axis-0",
+            value: 90,
+            borderColor: "rgba(192, 75, 192, 0.4)",
+            borderWidth: 2,
+            label: {
+              content: "CS qual 90%",
+              enabled: true,
+              position: "left",
+              xAdjust: 5,
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+            },
+          },
+          {
+            id: "line3",
+            type: "line",
+            mode: "horizontal",
+            scaleID: "y-axis-0",
+            value: 85,
+            borderColor: "rgba(192, 192, 75, 0.4)",
+            borderWidth: 2,
+            label: {
+              content: "개발 이관 85%",
+              enabled: true,
+              position: "left",
+              xAdjust: 5,
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+            },
+          },
+        ],
+      },
+      legend: {
+        display: true,
+        position: "top",
+        align: "end",
+      },
+      tooltips: {
+        callbacks: {
+          label: function (tooltipItem, data) {
+            let label = data.datasets[tooltipItem.datasetIndex].label || "";
 
-  useEffect(() => {
+            if (tooltipItem.yLabel !== null) {
+              label += `: ${tooltipItem.yLabel}%`;
+            }
+
+            if (tooltipItem.yLabel == 95) {
+              label += " (양산이관 95%)";
+            } else if (tooltipItem.yLabel == 90) {
+              label += " (CS qual 90%)";
+            } else if (tooltipItem.yLabel == 85) {
+              label += " (개발 이관 85%)";
+            }
+
+            return label;
+          },
+        },
+      },
+      plugins: {
+        datalabels: {
+          display: true,
+          align: "top",
+          formatter: function (value) {
+            return value + "%";
+          },
+          font: {
+            weight: "bold",
+          },
+        },
+      },
+    };
+
+    // Canvas 너비 동적 계산
+    const newCanvasWidth = Math.max(labels.length * 80, 800); // 레이블의 길이에 따라 너비 계산
+    console.log(newCanvasWidth);
+
+    if (chartInstanceRef.current) {
+      chartInstanceRef.current.destroy();
+    }
+
+    chartInstanceRef.current = new Chart(chartRef.current, {
+      type: "line",
+      data,
+      options,
+      plugins: [ChartDataLabels], // ensure the plugin is added to the chart
+    });
+
+    setCanvasWidth(newCanvasWidth); // 상태 업데이트로 캔버스 너비 설정
+
     return () => {
-      // 컴포넌트 언마운트 시 차트 인스턴스 파괴
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
-        chartInstance.current = null;
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy();
       }
     };
-  }, []);
+  }, [activeView, selectedProductCategory, selectedProducts, canvasWidth]);
 
   return (
     <ChartContainer>
-      <ChartCanvas ref={chartRef}></ChartCanvas>
+      <div
+        style={{
+          width: "1400px",
+          height: "100%",
+          overflowX: "auto",
+        }}
+      >
+        <div
+          style={{
+            width: `${canvasWidth}px`,
+            height: "100%",
+          }}
+        >
+          <ChartCanvas
+            ref={chartRef}
+            canvasWidth={canvasWidth}
+            style={{
+              maxWidth: `${canvasWidth}px`,
+            }}
+            key={activeView + canvasWidth}
+          />
+        </div>
+      </div>
     </ChartContainer>
   );
 };

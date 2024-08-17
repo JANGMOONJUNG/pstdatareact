@@ -32,7 +32,7 @@ function App() {
   return (
     <div className="App">
       <Header active={active} setActive={setActive} />
-      <Ticker />
+      {active != 0 && <Ticker />}
       {getContent()}
       <Footer />
     </div>

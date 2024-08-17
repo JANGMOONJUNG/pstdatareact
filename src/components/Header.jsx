@@ -3,12 +3,12 @@ import React from "react";
 import styled from "styled-components";
 
 const HeaderContainer = styled.header`
-  background-color: #ffd369;
-  color: #222831;
+  background-color: #222831;
+  color: #ffffff;
   padding: 20px 0;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-around;
+  align-items: center;
 `;
 
 const Title = styled.h1`
@@ -38,12 +38,11 @@ const NavItem = styled.li`
 `;
 
 const NavLink = styled.span`
-  color: #393e46;
+  color: #ffffff;
   text-decoration: none;
   font-size: 18px;
   font-family: "Roboto", sans-serif;
   font-weight: 600;
-  border-bottom: 2px solid #ffd369;
   cursor: pointer;
 
   &.active_menu {
@@ -51,12 +50,61 @@ const NavLink = styled.span`
   }
 
   &:hover {
-    color: #393e46;
-    border-bottom: 2px solid #393e46;
+    color: #6986ff;
+    border-bottom: 2px solid #6986ff;
   }
 `;
 
+const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+const UserImage = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: blue;
+`;
+
+const UserDetailContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+`;
+
+const UserDepartment = styled.span`
+  font-weight: 700;
+`;
+
+const UserNameAndNumber = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
+const UserName = styled.span`
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+`;
+
+const UserNumber = styled.span`
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  color: #555;
+`;
+
 const Header = ({ active, setActive }) => {
+  const profile = {
+    EMP_NO: "2053940",
+    NAME_KOR: "장문정",
+    DEPT_NAME_KOR: "DRAM개발PI품질&수율",
+  };
+
   return (
     <HeaderContainer>
       <Title>개발PTS</Title>
@@ -104,6 +152,16 @@ const Header = ({ active, setActive }) => {
           </NavItem>
         </NavList>
       </Nav>
+      <UserInfo>
+        <UserImage src={""} alt="User Photo" />
+        <UserDetailContainer>
+          <UserDepartment>{profile.DEPT_NAME_KOR}</UserDepartment>
+          <UserNameAndNumber>
+            <UserName>{profile.NAME_KOR}</UserName>
+            <UserNumber>{profile.EMP_NO}</UserNumber>
+          </UserNameAndNumber>
+        </UserDetailContainer>
+      </UserInfo>
     </HeaderContainer>
   );
 };

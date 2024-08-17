@@ -1,12 +1,14 @@
 // src/components/ChartComponent.js
 import React, { useEffect, useRef } from "react";
-import Chart from "chart.js/auto";
+import Chart from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import styled from "styled-components";
 import { product_data } from "../dummyData";
 
+Chart.plugins.unregister(ChartDataLabels);
+
 const ChartContainer = styled.div`
   width: 50%;
-  overflow-x: auto;
 `;
 
 const ChartCanvas = styled.canvas`
@@ -69,15 +71,32 @@ const ChartComponent2 = ({
           datasets: datasets,
         },
         options: {
-          responsive: false,
+          responsive: true,
           scales: {
-            y: {
-              beginAtZero: true,
-              max: 100,
-              min: 0,
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                  suggestedMax: 100,
+                  suggestedMin: 0,
+                  callback: function (value) {
+                    return value + "%"; // y축 라벨에 % 추가
+                  },
+                },
+              },
+            ],
+          },
+          plugins: {
+            datalabels: {
+              display: true,
+              formatter: function (value) {
+                return value + "%"; // 데이터 레이블에 % 추가
+              },
+              color: "black",
             },
           },
         },
+        plugins: [ChartDataLabels],
       });
     }
   }, [activeView, selectedProductCategory, selectedProduct]);
@@ -94,7 +113,9 @@ const ChartComponent2 = ({
 
   return (
     <ChartContainer>
-      <ChartCanvas ref={chartRef}></ChartCanvas>
+      <div style={{ width: "680px", minWidth: "680px" }}>
+        <ChartCanvas ref={chartRef}></ChartCanvas>
+      </div>
     </ChartContainer>
   );
 };

@@ -1,15 +1,28 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { TableDataAREA, TableDataModule, product_data } from "../dummyData";
 import { colorPalette } from "../color";
 import ChartComponent2 from "./ChartComponent2";
 
+import { IoMdDownload } from "react-icons/io";
+import { TbMailFilled } from "react-icons/tb";
+
+import html2canvas from "html2canvas";
+
 const Container = styled.div`
-  width: 100%;
+  width: 1440px;
   height: 100%;
   display: flex;
   flex-direction: column;
   padding: 20px;
+
+  box-sizing: border-box;
+
+  background-color: #ffffff;
+
+  border-radius: 16px;
+
+  box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
 `;
 
 const Header = styled.div`
@@ -63,13 +76,24 @@ const ProductButton = styled.button`
   font-size: 12px;
 `;
 
+const IconButton = styled.button`
+  background-color: #fff;
+  color: #222831;
+  border: 1px solid #222831;
+  border-radius: 12px;
+  cursor: pointer;
+
+  width: 36px;
+  height: 36px;
+`;
+
 const Content = styled.div`
   display: flex;
   margin-top: 20px;
 `;
 
 const TableContainer = styled.div`
-  width: 40%;
+  min-width: 600px;
   padding: 20px;
 `;
 
@@ -88,11 +112,10 @@ const Th = styled.th`
 const Td = styled.td`
   border: 1px solid #222831;
   padding: 8px;
+  font-size: 14px;
 `;
 
 const StatusBox = styled.div`
-  width: 100%;
-
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 12px;
@@ -101,11 +124,17 @@ const StatusBox = styled.div`
   font-size: 14px;
   line-height: 1.6;
 
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
   ul {
     display: flex;
     gap: 10px;
+    margin: 0px;
     li {
       list-style: none;
+      text-align: center;
     }
 
     .up {
@@ -132,6 +161,17 @@ const ProcessModuleRate = () => {
   const [activeView, setActiveView] = useState("process");
   const [selectedProductCategory, setSelectedProductCategory] = useState("CP");
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const ref = useRef();
+
+  const handleDownloadImage = () => {
+    html2canvas(ref.current).then((canvas) => {
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "capture.png";
+      link.click();
+    });
+  };
 
   const getTableData = () => {
     if (activeView === "process") {
@@ -189,7 +229,7 @@ const ProcessModuleRate = () => {
 
     return (
       <StatusBox>
-        지난 주 대비
+        <h3 style={{ margin: "0px" }}>지난 주 대비</h3>
         <ul>
           {Object.keys(changes).map((key) => {
             const change = changes[key];
@@ -210,6 +250,18 @@ const ProcessModuleRate = () => {
       <Header>
         <Title>공정별/모듈별 합격률</Title>
         <ButtonGroup>
+          <IconButton
+            active={activeView === "monthly"}
+            onClick={handleDownloadImage}
+          >
+            <IoMdDownload style={{ fontSize: "20px", fontWeight: "700" }} />
+          </IconButton>
+          <IconButton
+            active={activeView === "monthly"}
+            onClick={() => setActiveView("monthly")}
+          >
+            <TbMailFilled style={{ fontSize: "20px", fontWeight: "700" }} />
+          </IconButton>
           <ToggleButton
             isActive={activeView === "process"}
             onClick={() => setActiveView("process")}
@@ -250,7 +302,7 @@ const ProcessModuleRate = () => {
           </ProductButton>
         ))}
       </ProductList>
-      <Content>
+      <Content ref={ref}>
         <ChartComponent2
           activeView={activeView}
           selectedProductCategory={selectedProductCategory}

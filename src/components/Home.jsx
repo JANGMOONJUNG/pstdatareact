@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -15,9 +15,13 @@ const Image = styled.img`
 `;
 
 const Home = () => {
+  const ref = useRef();
+
   return (
     <Container>
-      <Image src="./homeMain.png" alt="메인 사진" />
+      <video muted autoPlay style={{ objectFit: "cover" }}>
+        <source src="./homeVideo.mp4" type="video/mp4" />
+      </video>
     </Container>
   );
 };

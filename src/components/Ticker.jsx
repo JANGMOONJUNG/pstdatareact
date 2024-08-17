@@ -11,9 +11,21 @@ const tickerAnimation = keyframes`
   }
 `;
 
+const colorAnimation = keyframes`
+  0% {
+    color:#ffffff;
+  }
+  50%{
+  color:#6986ff;
+  }
+  100% {
+    color:#ffffff;
+  }
+`;
+
 const TickerContainer = styled.div`
-  background-color: #222831;
-  color: #ffd369;
+  background-color: #3f4a59;
+  color: #ffffff;
   padding: 16px 0;
   text-align: center;
   font-weight: bold;
@@ -24,7 +36,8 @@ const TickerContainer = styled.div`
 
 const TickerContent = styled.div`
   display: inline-block;
-  animation: ${tickerAnimation} 10s linear infinite;
+  animation: ${tickerAnimation} 10s linear infinite,
+    ${colorAnimation} 4s linear infinite;
 `;
 
 const Ticker = () => {

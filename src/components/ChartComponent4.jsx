@@ -1,11 +1,14 @@
 // src/components/ChartComponent4.js
 import React, { useEffect, useRef } from "react";
-import Chart from "chart.js/auto";
+import Chart from "chart.js";
 import styled from "styled-components";
 import { product_data } from "../dummyData";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+
+Chart.plugins.unregister(ChartDataLabels);
 
 const ChartContainer = styled.div`
-  width: 40%;
+  width: 45%;
   overflow-x: auto;
 `;
 
@@ -72,13 +75,27 @@ const ChartComponent4 = ({ selectedProductCategory, selectedProduct }) => {
         options: {
           responsive: true,
           scales: {
-            y: {
-              beginAtZero: true,
-              max: 100,
-              min: 0,
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                  max: 100,
+                  min: 0,
+                },
+              },
+            ],
+          },
+          plugins: {
+            datalabels: {
+              display: true,
+              formatter: function (value) {
+                return value + "%"; // 데이터 레이블에 % 추가
+              },
+              color: "black",
             },
           },
         },
+        plugins: [ChartDataLabels],
       });
     }
   }, [selectedProductCategory, selectedProduct]);

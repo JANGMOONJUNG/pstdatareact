@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 const FooterContainer = styled.footer`
   background-color: #222831;
-  color: #ffd369;
+  color: #ffffff;
   text-align: center;
   padding: 10px 0;
 `;

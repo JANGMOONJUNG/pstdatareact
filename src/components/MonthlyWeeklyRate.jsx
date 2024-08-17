@@ -1,16 +1,29 @@
 // src/components/MonthlyWeeklyRate.js
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { product_data } from "../dummyData";
 import { colorPalette } from "../color";
 import ChartComponent from "./ChartComponent";
 
+import { IoMdDownload } from "react-icons/io";
+import { TbMailFilled } from "react-icons/tb";
+
+import html2canvas from "html2canvas";
+
 const Container = styled.div`
-  width: 100%;
+  width: 1440px;
   height: 100%;
   display: flex;
   flex-direction: column;
   padding: 20px;
+
+  box-sizing: border-box;
+
+  background-color: #ffffff;
+
+  border-radius: 16px;
+
+  box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
 `;
 
 const Header = styled.div`
@@ -35,6 +48,17 @@ const ToggleButton = styled.button`
   border-radius: 12px;
   padding: 8px 16px;
   cursor: pointer;
+`;
+
+const IconButton = styled.button`
+  background-color: #fff;
+  color: #222831;
+  border: 1px solid #222831;
+  border-radius: 12px;
+  cursor: pointer;
+
+  width: 36px;
+  height: 36px;
 `;
 
 const ProductList = styled.div`
@@ -77,11 +101,34 @@ const MonthlyWeeklyRate = () => {
     );
   };
 
+  const ref = useRef();
+
+  const handleDownloadImage = () => {
+    html2canvas(ref.current).then((canvas) => {
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "capture.png";
+      link.click();
+    });
+  };
+
   return (
     <Container>
       <Header>
-        <Title>월별 합격률</Title>
+        <Title>PTS {activeView === "monthly" ? "월별" : "주별"} 합격률</Title>
         <ButtonGroup>
+          <IconButton
+            active={activeView === "monthly"}
+            onClick={handleDownloadImage}
+          >
+            <IoMdDownload style={{ fontSize: "20px", fontWeight: "700" }} />
+          </IconButton>
+          <IconButton
+            active={activeView === "monthly"}
+            onClick={() => setActiveView("monthly")}
+          >
+            <TbMailFilled style={{ fontSize: "20px", fontWeight: "700" }} />
+          </IconButton>
           <ToggleButton
             active={activeView === "monthly"}
             onClick={() => setActiveView("monthly")}
@@ -110,7 +157,7 @@ const MonthlyWeeklyRate = () => {
           </CategoryButton>
         ))}
       </ProductList>
-      <ProductList>
+      <ProductList style={{ paddingBottom: "40px" }}>
         {product_data[selectedProductCategory].options.map((product) => (
           <ProductButton
             key={product}
@@ -122,11 +169,14 @@ const MonthlyWeeklyRate = () => {
           </ProductButton>
         ))}
       </ProductList>
-      <ChartComponent
-        activeView={activeView}
-        selectedProductCategory={selectedProductCategory}
-        selectedProducts={selectedProducts}
-      />
+      <div>
+        <ChartComponent
+          chartRef={ref}
+          activeView={activeView}
+          selectedProductCategory={selectedProductCategory}
+          selectedProducts={selectedProducts}
+        />
+      </div>
     </Container>
   );
 };

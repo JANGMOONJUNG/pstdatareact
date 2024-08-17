@@ -685,7 +685,7 @@ export const TableDataModule = [
 
 export const inspectionData = [
   {
-    주차: "WW22",
+    주차: "WW24",
     제품명: "6EK",
     GRADE: "Q1",
     STEP: 1,

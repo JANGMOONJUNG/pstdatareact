@@ -5,6 +5,7 @@ import ProcessModuleRate from "./ProcessModuleRate";
 import MonthlyWeeklyRate from "./MonthlyWeeklyRate";
 import SideNavigation from "./SideNavigation";
 import InspectionManage from "./InspectionManage";
+import LotStatus from "./LotStatus";
 
 const ContainerStatus = styled.div`
   display: flex;
@@ -41,6 +42,8 @@ const Status = () => {
         return <ProcessModuleRate />;
       case "inspection-manage":
         return <InspectionManage />;
+      case "lot-status":
+        return <LotStatus />;
       default:
         return <MonthlyWeeklyRate />;
     }

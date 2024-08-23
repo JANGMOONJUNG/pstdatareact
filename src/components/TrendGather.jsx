@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { TrendStepData, product_data } from "../dummyData";
+import { inspectionData, product_data } from "../dummyData";
 import { colorPalette } from "../color";
 import { FiSearch } from "react-icons/fi";
 import { IoMdDownload } from "react-icons/io";
 import { TbMailFilled } from "react-icons/tb";
 import { RiFileExcel2Fill } from "react-icons/ri";
-import TrendModal from "./TrendModal";
+import ChartComponent5 from "./ChartComponent5";
 
 const Container = styled.div`
   width: 100%;
@@ -24,71 +24,6 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   padding-bottom: 20px;
-`;
-
-const ListWrapper = styled.div`
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  position: relative;
-`;
-
-const ListHeader = styled.div`
-  background-color: ${colorPalette.lightGray};
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  border-radius: 12px;
-  align-items: center;
-  height: 44px;
-`;
-
-const ListContainer = styled.div`
-  height: 480px;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${colorPalette.deepBlue};
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: ${colorPalette.lightGray};
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: ${colorPalette.darkBlue};
-  }
-`;
-
-const ListItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
-  height: 44px;
-  align-items: center;
-  margin-bottom: 6px;
-  border-radius: 12px;
-  font-size: 14px;
-  background-color: #f9f9f9;
-`;
-
-const ItemField0 = styled.div`
-  flex: 0.8;
-  max-width: 200px;
-  overflow: hidden;
-`;
-
-const ItemField = styled.div`
-  flex: 1;
-  max-width: 200px;
-  overflow: hidden;
 `;
 
 const FilterContainer = styled.div`
@@ -153,6 +88,37 @@ const IconButton = styled.button`
   height: 36px;
 `;
 
+const ChartContainer = styled.div`
+  height: 600px;
+
+  background: #eeeeee;
+  box-sizing: border-box;
+  padding-top: 32px;
+  border-radius: 16px;
+
+  padding-left: 30px;
+
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${colorPalette.deepBlue};
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${colorPalette.lightGray};
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: ${colorPalette.darkBlue};
+  }
+`;
+
 function getWeekNumber(date) {
   // 주어진 날짜의 연도의 1월 1일 설정
   const startOfYear = new Date(date.getFullYear(), 0, 1);
@@ -169,7 +135,7 @@ function getWeekNumber(date) {
   return weekNumber;
 }
 
-const TrendStep1 = () => {
+const TrendGather = () => {
   const [selectedProductCategory, setSelectedProductCategory] = useState("CP");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
@@ -179,21 +145,24 @@ const TrendStep1 = () => {
   const [selectedModule, setSelectedModule] = useState("");
   const [selectedArea, setSelectedArea] = useState("");
 
-  const [selectedCore, setSelectedCore] = useState("");
-  const [selectedSub, setSelectedSub] = useState("");
-
   useEffect(() => {
-    const filtered = TrendStepData.filter(
-      (item) =>
-        (selectedCore ? item.CORE === selectedCore : true) &&
-        (selectedSub ? item.파생 === selectedSub : true) &&
-        (selectedModule ? item.Module === selectedModule : true)
-    );
-
-    console.log(filtered);
-
-    setFilteredData(filtered);
-  }, [selectedCore, selectedSub, selectedModule, selectedArea]);
+    if (selectedProduct) {
+      const filtered = inspectionData
+        .filter(
+          (item) =>
+            item.제품명 === selectedProduct &&
+            (selectedModule ? item.Module === selectedModule : true)
+        )
+        .filter(
+          (item) =>
+            item.제품명 === selectedProduct &&
+            (selectedArea ? item.AREA_ID === selectedArea : true)
+        );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData([]);
+    }
+  }, [selectedProduct, selectedWeek, selectedModule, selectedArea]);
 
   const openModal = (data) => {
     setModalData(data);
@@ -217,20 +186,17 @@ const TrendStep1 = () => {
   const handleSave = () => {
     setFilteredData((prevData) =>
       prevData.map((item) =>
-        item.주차 === modalData.주차 && item.제품명 === modalData.제품명
-          ? modalData
-          : item
+        item.제품명 === modalData.제품명 ? modalData : item
       )
     );
     closeModal();
   };
-
   const uniqueModule = Array.from(
-    new Set(TrendStepData.map((item) => item.Module))
+    new Set(inspectionData.map((item) => item.Module))
   );
 
   const uniqueArea = Array.from(
-    new Set(TrendStepData.map((item) => item.AREA_ID))
+    new Set(inspectionData.map((item) => item.AREA_ID))
   );
 
   return (
@@ -260,27 +226,15 @@ const TrendStep1 = () => {
               </option>
             ))}
           </Select>
-          <label>코어:</label>
+          <label>제품:</label>
           <Select
-            value={selectedCore}
-            onChange={(e) => setSelectedCore(e.target.value)}
+            value={selectedProduct}
+            onChange={(e) => setSelectedProduct(e.target.value)}
           >
             <option value="">전체</option>
-            {product_data[selectedProductCategory].options.map((core) => (
-              <option key={core} value={core}>
-                {core}
-              </option>
-            ))}
-          </Select>
-          <label>파생:</label>
-          <Select
-            value={selectedSub}
-            onChange={(e) => setSelectedSub(e.target.value)}
-          >
-            <option value="">전체</option>
-            {product_data[selectedProductCategory].options.map((sub) => (
-              <option key={sub} value={sub}>
-                {sub}
+            {product_data[selectedProductCategory].options.map((week) => (
+              <option key={week} value={week}>
+                {week}
               </option>
             ))}
           </Select>
@@ -330,49 +284,29 @@ const TrendStep1 = () => {
           </IconButton>
         </ButtonGroup>
       </Header>
-      {filteredData.length > 0 && (
-        <ListWrapper>
-          <ListHeader>
-            <ItemField0>제품명(Core)</ItemField0>
-            <ItemField0>제품명(파생)</ItemField0>
-            <ItemField>GRADE</ItemField>
-            <ItemField>STEP</ItemField>
-            <ItemField>STEP_DESC</ItemField>
-            <ItemField>DCOL_ITEM_CD</ItemField>
-            <ItemField>Module</ItemField>
-            <ItemField>AREA_ID</ItemField>
-          </ListHeader>
-          <ListContainer>
-            {filteredData.map((item, index) => (
-              <ListItem
-                key={index}
-                index={index}
-                onClick={() => openModal(item)}
-              >
-                <ItemField0>{item.CORE}</ItemField0>
-                <ItemField0>{item.파생}</ItemField0>
-                <ItemField>{item.GRADE}</ItemField>
-                <ItemField>{item.STEP}</ItemField>
-                <ItemField>{item.STEP_DESC}</ItemField>
-                <ItemField>{item.DCOL_ITEM_CD}</ItemField>
-                <ItemField>{item.Module}</ItemField>
-                <ItemField>{item.AREA_ID}</ItemField>
-              </ListItem>
-            ))}
-          </ListContainer>
-        </ListWrapper>
-      )}
-
-      {isModalOpen && (
-        <TrendModal
-          modalData={modalData}
-          closeModal={closeModal}
-          handleInputChange={handleInputChange}
-          handleSave={handleSave}
-        />
-      )}
+      <ChartContainer
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          width: "1600px",
+          gap: "8px",
+        }}
+      >
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((item) => (
+          <div
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: "8px",
+              padding: "16px 4px",
+              marginBottom: "20px",
+            }}
+          >
+            <ChartComponent5 />
+          </div>
+        ))}
+      </ChartContainer>
     </Container>
   );
 };
 
-export default TrendStep1;
+export default TrendGather;

@@ -234,9 +234,14 @@ const ProcessModuleRate = () => {
           {Object.keys(changes).map((key) => {
             const change = changes[key];
             const isUp = change > 0;
+
             return (
-              <li key={key} className={isUp ? "up" : "down"}>
-                {key} {Math.abs(change)}% {isUp ? "▲" : "▼"}
+              <li
+                key={key}
+                className={change === 0 ? "" : isUp ? "up" : "down"}
+              >
+                {key} {Math.abs(change)}%{" "}
+                {change === 0 ? "-" : isUp ? "▲" : "▼"}
               </li>
             );
           })}

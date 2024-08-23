@@ -33,6 +33,9 @@ const SideNavigationContainer = styled.nav`
 const SideNavigation = ({ select, onSelect }) => {
   return (
     <SideNavigationContainer>
+      <h3 style={{ textAlign: "left", fontSize: "16px", marginLeft: "10px" }}>
+        PTS
+      </h3>
       <ul>
         <li
           onClick={() => onSelect("monthly-weekly-rate")}
@@ -51,6 +54,17 @@ const SideNavigation = ({ select, onSelect }) => {
           className={select === "inspection-manage" ? "side_active" : ""}
         >
           검출 관리
+        </li>
+      </ul>
+      <h3 style={{ textAlign: "left", fontSize: "16px", marginLeft: "10px" }}>
+        LOT
+      </h3>
+      <ul>
+        <li
+          onClick={() => onSelect("lot-status")}
+          className={select === "lot-status" ? "side_active" : ""}
+        >
+          LOT status
         </li>
       </ul>
     </SideNavigationContainer>

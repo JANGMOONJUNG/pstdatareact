@@ -8,15 +8,7 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const Image = styled.img`
-  width: 800px;
-  height: auto;
-  object-fit: contain;
-`;
-
 const Home = () => {
-  const ref = useRef();
-
   return (
     <Container>
       <video muted autoPlay style={{ objectFit: "cover" }}>

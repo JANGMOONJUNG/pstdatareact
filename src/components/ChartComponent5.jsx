@@ -3,6 +3,9 @@ import Chart from "chart.js";
 import "chartjs-plugin-annotation";
 import "chartjs-plugin-datalabels";
 import styled from "styled-components";
+import { IoMdDownload } from "react-icons/io";
+
+import html2canvas from "html2canvas";
 
 const ChartComponent5 = () => {
   const chartContainer = useRef(null);
@@ -19,6 +22,17 @@ const ChartComponent5 = () => {
   // 데이터 세트
   const dataSet1 = [27.14, 27.14, 50, null, null, null, null, null];
   const dataSet2 = [null, null, null, null, 27.4, 27.4, 27.4, 27.4];
+
+  const ref = useRef();
+
+  const handleDownloadImage = () => {
+    html2canvas(ref.current).then((canvas) => {
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "capture.png";
+      link.click();
+    });
+  };
 
   // 데이터에서 최대값과 최소값 계산
   const calculateYMaxMin = () => {
@@ -177,20 +191,27 @@ const ChartComponent5 = () => {
           display: "flex",
           gap: "8px",
           width: "100%",
-          paddingLeft: "10%",
+          padding: "0px 5%",
+          justifyContent: "space-between",
+          boxSizing: "border-box",
         }}
       >
-        <StyledButton
-          onClick={() => {
-            setYMax(initialYMax);
-            setYMin(initialYMin);
-          }}
-        >
-          초기화
-        </StyledButton>
-        <StyledButton onClick={calculateYMaxMin}>SpecOut 확인</StyledButton>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <StyledButton
+            onClick={() => {
+              setYMax(initialYMax);
+              setYMin(initialYMin);
+            }}
+          >
+            초기화
+          </StyledButton>
+          <StyledButton onClick={calculateYMaxMin}>SpecOut 확인</StyledButton>
+        </div>
+        <IconButton onClick={handleDownloadImage}>
+          <IoMdDownload style={{ fontSize: "18px", fontWeight: "700" }} />
+        </IconButton>
       </div>
-      <div style={{ width: "500px" }}>
+      <div style={{ width: "500px" }} ref={ref}>
         <canvas ref={chartContainer} />
       </div>
     </div>
@@ -209,6 +230,20 @@ const StyledButton = styled.button`
     background: #393e46; /* 호버 시 배경 색상 */
     color: #eeeeee; /* 호버 시 텍스트 색상 */
   }
+`;
+
+const IconButton = styled.button`
+  background-color: #fff;
+  color: #222831;
+  border: 1px solid #222831;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default ChartComponent5;

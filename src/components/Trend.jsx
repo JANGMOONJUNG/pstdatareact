@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import SideNavigation3 from "./SideNavigation3";
 import TrendStep1 from "./TrendStep1";
+import TrendGather from "./TrendGather";
 
 const ContainerStatus = styled.div`
   display: flex;
@@ -17,8 +18,11 @@ const SideBar = styled.div`
 
 const Content = styled.main`
   flex-grow: 1;
-  min-width: 980px;
   padding: 40px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Trend = () => {
@@ -28,6 +32,8 @@ const Trend = () => {
     switch (selectedComponent) {
       case "trend-step1":
         return <TrendStep1 />;
+      case "trendGather":
+        return <TrendGather />;
       default:
         return <></>;
     }

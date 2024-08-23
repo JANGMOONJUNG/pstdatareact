@@ -388,7 +388,7 @@ const InspectionModal = ({
                     }}
                   >
                     <img
-                      src="./tempprofile.png"
+                      src={`./tempprofile.png`}
                       alt=""
                       style={{
                         width: "100%",

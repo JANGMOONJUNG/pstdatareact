@@ -35,10 +35,16 @@ const SideNavigation3 = ({ select, onSelect }) => {
     <SideNavigationContainer>
       <ul>
         <li
+          onClick={() => onSelect("trendGather")}
+          className={select === "trendGather" ? "side_active" : ""}
+        >
+          검출Trend 모음
+        </li>
+        <li
           onClick={() => onSelect("trend-step1")}
           className={select === "trend-step1" ? "side_active" : ""}
         >
-          Trend 1차 분석
+          검출분석Tool 1차
         </li>
       </ul>
     </SideNavigationContainer>

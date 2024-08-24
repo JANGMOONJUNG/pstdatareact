@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { product_data, TargetManageData } from "../dummyData";
+import { product_data } from "../dummyData";
 import { colorPalette } from "../color";
 import DataTable from "./DataTable";
 import { FiSearch } from "react-icons/fi";
 import { IoMdDownload } from "react-icons/io";
 import { TbMailFilled } from "react-icons/tb";
 import { RiFileExcel2Fill } from "react-icons/ri";
+import axios from "axios";
 
 const Container = styled.div`
   width: 100%;
@@ -101,25 +102,34 @@ const TargetManagement = () => {
   const [selectedModule, setSelectedModule] = useState("");
   const [selJudgment, setSelJudgment] = useState("");
 
-  const [filteredData, setFilteredData] = useState(TargetManageData);
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
-    console.log(TargetManageData[0]["DATA 판정"].toString());
-    console.log(selJudgment);
-
-    const filtered = TargetManageData.filter(
+    const filtered = data.filter(
       (item) =>
-        (selectedCore ? item.제품1 === selectedCore : true) &&
-        (selectedSub ? item.제품2 === selectedSub : true) &&
+        (selectedCore ? item.Core === selectedCore : true) &&
+        (selectedSub ? item.파생 === selectedSub : true) &&
         (selectedModule ? item.Module === selectedModule : true) &&
         (selJudgment ? item["DATA 판정"].toString() === selJudgment : true)
     );
+
     setFilteredData(filtered);
   }, [selectedCore, selectedSub, selectedModule, selJudgment]);
 
-  const uniqueModules = Array.from(
-    new Set(TargetManageData.map((item) => item.Module))
-  );
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:4001/targetdgg/data")
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((e) => {
+        console.log("error", e);
+      });
+  }, []);
+
+  const uniqueModules = Array.from(new Set(data.map((item) => item.Module)));
 
   return (
     <Container>

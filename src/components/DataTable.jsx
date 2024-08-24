@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { colorPalette } from "../color";
 import { FaCheck } from "react-icons/fa";
+import TargetModal from "./TargetModal";
 
 const TableContainer = styled.div`
   margin-top: 20px;
@@ -61,118 +62,23 @@ const ListItem = styled.div`
   background-color: #f9f9f9;
 `;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  z-index: 1000;
-`;
-
-const ModalContent = styled.div`
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-  max-width: 90%;
-`;
-
-const Textarea = styled.textarea`
-  width: 80%;
-  height: 100px;
-  padding: 10px;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  resize: none;
-`;
-
-const Button = styled.button`
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-`;
-
-const Select = styled.select`
-  width: 80%;
-  padding: 10px;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-`;
-
 const ItemField = styled.div`
   flex: 1;
   max-width: 200px;
   overflow: hidden;
 `;
 
-const Modal = ({
-  show,
-  onClose,
-  onSubmit,
-  initialReason,
-  initialJudgement,
-}) => {
-  const [reason, setReason] = useState(initialReason);
-  const [judgement, setJudgement] = useState(initialJudgement);
-
-  if (!show) {
-    return null;
-  }
-
-  const handleReasonChange = (e) => {
-    if (e.target.value.length <= 50) {
-      setReason(e.target.value);
-    }
-  };
-
-  const handleJudgementChange = (e) => {
-    setJudgement(e.target.value === "true");
-  };
-
-  const handleSubmit = () => {
-    onSubmit(reason, judgement);
-  };
-
-  return (
-    <ModalOverlay>
-      <ModalContent>
-        <h2>사유 입력/수정</h2>
-        <Textarea value={reason} onChange={handleReasonChange} />
-        <Select value={judgement} onChange={handleJudgementChange}>
-          <option value="false">False</option>
-          <option value="true">True</option>
-        </Select>
-        <Button onClick={handleSubmit}>Submit</Button>
-        <Button
-          onClick={onClose}
-          style={{ marginLeft: "10px", backgroundColor: "#dc3545" }}
-        >
-          Close
-        </Button>
-      </ModalContent>
-    </ModalOverlay>
-  );
-};
+const ItemField2 = styled.div`
+  flex: 2.2;
+  overflow: hidden;
+`;
 
 const DataTable = ({ data }) => {
   const [tableData, setTableData] = useState(data);
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentReason, setCurrentReason] = useState("");
-  const [currentJudgement, setCurrentJudgement] = useState(false);
-  const [currentRow, setCurrentRow] = useState(null);
+
+  const [modalData, setModalData] = useState(null);
+  const [modalIndex, setModalIndex] = useState(-1);
 
   if (!tableData || tableData.length === 0) {
     return <p>No data available</p>;
@@ -184,69 +90,59 @@ const DataTable = ({ data }) => {
     return targetDifference || gradeDifference;
   };
 
-  const processRow = (row) => {
-    const targetMatch = row.Target === row["Target.1"];
-    row["DATA 판정"] = targetMatch;
-    if (!row.hasOwnProperty("수정 된 판정")) {
-      row["수정 된 판정"] = false;
+  const openModal = (data, index) => {
+    if (data["DATA 판정"] === "TRUE") {
+      window.alert("DATA 판정이 TRUE인 것은 수정이 불가능합니다.");
+      return;
     }
-    return row;
+
+    setModalData(data);
+    setModalIndex(index);
+    setModalOpen(true);
   };
 
-  const handleReasonClick = (row) => {
-    console.log(row);
-
-    console.log(row["DATA 판정"]);
-
-    if (!row["DATA 판정"]) {
-      setCurrentReason(row["사유"] || "");
-      setCurrentJudgement(row["수정 된 판정"]);
-      setCurrentRow(row);
-
-      setModalOpen(true);
-    }
-  };
-
-  const handleModalClose = () => {
+  const closeModal = () => {
     setModalOpen(false);
-  };
-
-  const handleModalSubmit = (newReason, newJudgement) => {
-    const updatedData = tableData.map((row) => {
-      if (row === currentRow) {
-        return { ...row, 사유: newReason, "수정 된 판정": newJudgement };
-      }
-      return row;
-    });
-    setTableData(updatedData);
-    setModalOpen(false);
+    setModalData(null);
+    setModalIndex(-1);
   };
 
   return (
     <TableContainer>
-      <Modal
-        show={modalOpen}
-        onClose={handleModalClose}
-        onSubmit={handleModalSubmit}
-        initialReason={currentReason}
-        initialJudgement={currentJudgement}
-      />
+      {modalData && (
+        <TargetModal
+          modalData={modalData}
+          closeModal={closeModal}
+          callback={(reason, finalDecision) => {
+            let tempData = tableData;
+            tempData[modalIndex].사유 = reason;
+            tempData[modalIndex].최종판정 = finalDecision === "true" ? "T" : "";
+
+            setTableData(tempData);
+          }}
+        />
+      )}
       <ListWrapper>
         <ListHeader>
-          {Object.keys(tableData[0]).map((key) => (
-            <ItemField key={key}>{key}</ItemField>
-          ))}
+          {Object.keys(tableData[0]).map((key) => {
+            if (key === "STEP_DESC" || key === "ITEM_CD") {
+              return <ItemField2 key={key}>{key}</ItemField2>;
+            }
+
+            return <ItemField key={key}>{key}</ItemField>;
+          })}
         </ListHeader>
         <ListContainer>
           {tableData.map((row, index) => {
-            row = processRow(row); // Process the row to set "DATA 판정"
             const hasDifference = checkDifference(row);
             return (
               <ListItem
                 key={index}
                 style={{
                   backgroundColor: hasDifference ? "#ffe7e7" : "#f9f9f9",
+                  cursor: "pointer",
                 }}
+                onClick={() => openModal(row, index)}
               >
                 {Object.entries(row).map(([key, value], idx) => {
                   const isTargetDifference =
@@ -259,10 +155,24 @@ const DataTable = ({ data }) => {
 
                   const isData판정 = key === "DATA 판정";
                   const data판정Color =
-                    value === true ? "blue" : value === false ? "red" : "black";
+                    value === "TRUE"
+                      ? "blue"
+                      : value === "FALSE"
+                      ? "red"
+                      : "black";
 
-                  const handleClick =
-                    key === "사유" ? () => handleReasonClick(row) : null;
+                  if (key === "STEP_DESC" || key === "ITEM_CD") {
+                    return (
+                      <ItemField2
+                        key={idx}
+                        style={{
+                          color: "black",
+                        }}
+                      >
+                        {value.toString()}
+                      </ItemField2>
+                    );
+                  }
 
                   return (
                     <ItemField
@@ -272,19 +182,28 @@ const DataTable = ({ data }) => {
                           ? "red"
                           : isData판정
                           ? data판정Color
+                          : key === "최종판정"
+                          ? value === "T"
+                            ? "blue"
+                            : "red"
                           : "black",
-                        cursor:
-                          handleClick && !row["DATA 판정"]
-                            ? "pointer"
-                            : "default",
                       }}
-                      onClick={handleClick}
                     >
                       {value !== null ? (
                         key === "사유" ? (
-                          <FaCheck
-                            style={{ fontSize: "14px", color: "green" }}
-                          />
+                          value ? (
+                            <FaCheck
+                              style={{ fontSize: "14px", color: "green" }}
+                            />
+                          ) : (
+                            "-"
+                          )
+                        ) : key === "최종판정" ? (
+                          value === "T" ? (
+                            "TRUE"
+                          ) : (
+                            "FALSE"
+                          )
                         ) : (
                           value.toString()
                         )

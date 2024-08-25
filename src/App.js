@@ -7,6 +7,7 @@ import Ticker from "./components/Ticker";
 import Status from "./components/Status";
 import TgDgg from "./components/TgDgg";
 import Trend from "./components/Trend";
+import Contact from "./Contact";
 
 function App() {
   // menu 구분용
@@ -23,7 +24,7 @@ function App() {
       case 3:
         return <TgDgg />;
       case 4:
-        return <div>lot trend 검색</div>;
+        return <Contact />;
       default:
         return <></>;
     }

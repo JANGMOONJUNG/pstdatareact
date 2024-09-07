@@ -11,14 +11,10 @@ import InspectionModal from "./InspectionModal";
 
 const Container = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   padding: 20px;
   box-sizing: border-box;
-  background-color: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
 `;
 
 const Header = styled.div`
@@ -45,28 +41,7 @@ const ListHeader = styled.div`
   height: 44px;
 `;
 
-const ListContainer = styled.div`
-  height: 480px;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${colorPalette.deepBlue};
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: ${colorPalette.lightGray};
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: ${colorPalette.darkBlue};
-  }
-`;
+const ListContainer = styled.div``;
 
 const ListItem = styled.div`
   display: flex;
@@ -161,8 +136,8 @@ const IconButton = styled.button`
 `;
 
 const InspectionManage = () => {
-  const [selectedProductCategory, setSelectedProductCategory] = useState("CP");
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProductCategory, setSelectedProductCategory] = useState("LC");
+  const [selectedProduct, setSelectedProduct] = useState("6EN");
   const [filteredData, setFilteredData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
@@ -173,11 +148,6 @@ const InspectionManage = () => {
   useEffect(() => {
     if (selectedProduct) {
       const filtered = inspectionData
-        .filter(
-          (item) =>
-            item.제품명 === selectedProduct &&
-            (selectedWeek ? item.주차 === selectedWeek : true)
-        )
         .filter(
           (item) =>
             item.제품명 === selectedProduct &&
@@ -216,17 +186,11 @@ const InspectionManage = () => {
   const handleSave = () => {
     setFilteredData((prevData) =>
       prevData.map((item) =>
-        item.주차 === modalData.주차 && item.제품명 === modalData.제품명
-          ? modalData
-          : item
+        item.제품명 === modalData.제품명 ? modalData : item
       )
     );
     closeModal();
   };
-
-  const uniqueWeeks = Array.from(
-    new Set(inspectionData.map((item) => item.주차))
-  );
 
   const uniqueModule = Array.from(
     new Set(inspectionData.map((item) => item.Module))
@@ -240,49 +204,6 @@ const InspectionManage = () => {
     <Container>
       <Header>
         <FilterContainer>
-          <label>테크:</label>
-          <Select
-            value={
-              selectedProductCategory
-                ? selectedProductCategory
-                : Object.keys(product_data)[0]
-            }
-            onChange={(e) => {
-              setSelectedProductCategory(e.target.value);
-              setSelectedProduct(null);
-              setSelectedWeek(""); // Reset week filter when changing category
-            }}
-          >
-            {Object.keys(product_data).map((tech) => (
-              <option key={tech} value={tech}>
-                {tech}
-              </option>
-            ))}
-          </Select>
-          <label>제품:</label>
-          <Select
-            value={selectedProduct}
-            onChange={(e) => setSelectedProduct(e.target.value)}
-          >
-            <option value="">전체</option>
-            {product_data[selectedProductCategory].options.map((week) => (
-              <option key={week} value={week}>
-                {week}
-              </option>
-            ))}
-          </Select>
-          <label>주차:</label>
-          <Select
-            value={selectedWeek}
-            onChange={(e) => setSelectedWeek(e.target.value)}
-          >
-            <option value="">전체</option>
-            {uniqueWeeks.map((week) => (
-              <option key={week} value={week}>
-                {week}
-              </option>
-            ))}
-          </Select>
           <label>공정:</label>
           <Select
             value={selectedArea}
@@ -317,38 +238,17 @@ const InspectionManage = () => {
             <FiSearch style={{ fontSize: "20px" }} />
           </SearchBarContainer>
         </FilterContainer>
-        <ButtonGroup>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div>IM: 90%</div>
-            <div>공정:90%</div>
-            <div>PI:90%</div>
-          </div>
-          <IconButton>
-            <IoMdDownload style={{ fontSize: "20px", fontWeight: "700" }} />
-          </IconButton>
-          <IconButton>
-            <RiFileExcel2Fill style={{ fontSize: "20px", fontWeight: "700" }} />
-          </IconButton>
-          <IconButton>
-            <TbMailFilled style={{ fontSize: "20px", fontWeight: "700" }} />
-          </IconButton>
-        </ButtonGroup>
       </Header>
       {selectedProduct && filteredData.length > 0 && (
         <ListWrapper>
           <ListHeader>
-            <ItemField0>주차</ItemField0>
-            <ItemField0>제품명</ItemField0>
-            <ItemField>GRADE</ItemField>
+            <ItemField2>제품명</ItemField2>
+            <ItemField2>GRADE</ItemField2>
             <ItemField>STEP</ItemField>
             <ItemField>STEP_DESC</ItemField>
             <ItemField>DCOL_ITEM_CD</ItemField>
             <ItemField>Module</ItemField>
             <ItemField>AREA_ID</ItemField>
-            <ItemField>검출횟수</ItemField>
-            <ItemField2>IM</ItemField2>
-            <ItemField2>PI</ItemField2>
-            <ItemField2>공정</ItemField2>
           </ListHeader>
           <ListContainer>
             {filteredData.map((item, index) => (
@@ -357,24 +257,13 @@ const InspectionManage = () => {
                 index={index}
                 onClick={() => openModal(item)}
               >
-                <ItemField0>{item.주차}</ItemField0>
-                <ItemField0>{item.제품명}</ItemField0>
-                <ItemField>{item.GRADE}</ItemField>
+                <ItemField2>{item.제품명}</ItemField2>
+                <ItemField2>{item.GRADE}</ItemField2>
                 <ItemField>{item.STEP}</ItemField>
                 <ItemField>{item.STEP_DESC}</ItemField>
                 <ItemField>{item.DCOL_ITEM_CD}</ItemField>
                 <ItemField>{item.Module}</ItemField>
                 <ItemField>{item.AREA_ID}</ItemField>
-                <ItemField>{item.검출횟수}</ItemField>
-                <ItemField2>
-                  <FaCheck style={{ fontSize: "14px", color: "green" }} />
-                </ItemField2>
-                <ItemField2>
-                  <FaCheck style={{ fontSize: "14px", color: "green" }} />
-                </ItemField2>
-                <ItemField2>
-                  <FaCheck style={{ fontSize: "14px", color: "green" }} />
-                </ItemField2>
               </ListItem>
             ))}
           </ListContainer>

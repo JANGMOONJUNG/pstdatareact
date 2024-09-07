@@ -18,15 +18,12 @@ const Container = styled.div`
   flex-direction: column;
   padding: 20px;
   box-sizing: border-box;
-  background-color: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
 `;
 
 const Header = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  text-align: left;
+  flex-direction: column;
 `;
 
 const Content = styled.div`
@@ -98,9 +95,9 @@ const SearchInput = styled.input`
 `;
 
 const LimitManagement = () => {
-  const [selectedProductCategory, setSelectedProductCategory] = useState("CP");
-  const [selectedCore, setSelectedCore] = useState("");
-  const [selectedSub, setSelectedSub] = useState("");
+  const [selectedProductCategory, setSelectedProductCategory] = useState("LC");
+  const [selectedCore, setSelectedCore] = useState("6EJ");
+  const [selectedSub, setSelectedSub] = useState("6EK");
   const [selectedModule, setSelectedModule] = useState("");
   const [selJudgment, setSelJudgment] = useState("");
 
@@ -137,45 +134,7 @@ const LimitManagement = () => {
     <Container>
       <Header>
         <FilterContainer>
-          <label>테크:</label>
-          <Select
-            value={selectedProductCategory}
-            onChange={(e) => {
-              setSelectedProductCategory(e.target.value);
-              setSelectedCore("");
-              setSelectedSub("");
-            }}
-          >
-            {Object.keys(product_data).map((tech) => (
-              <option key={tech} value={tech}>
-                {tech}
-              </option>
-            ))}
-          </Select>
-          <label>코어:</label>
-          <Select
-            value={selectedCore}
-            onChange={(e) => setSelectedCore(e.target.value)}
-          >
-            <option value="">전체</option>
-            {product_data[selectedProductCategory].options.map((core) => (
-              <option key={core} value={core}>
-                {core}
-              </option>
-            ))}
-          </Select>
-          <label>파생:</label>
-          <Select
-            value={selectedSub}
-            onChange={(e) => setSelectedSub(e.target.value)}
-          >
-            <option value="">전체</option>
-            {product_data[selectedProductCategory].options.map((sub) => (
-              <option key={sub} value={sub}>
-                {sub}
-              </option>
-            ))}
-          </Select>
+          <h3 style={{ margin: "0px" }}>Limit match list</h3>
           <label>모듈:</label>
           <Select
             value={selectedModule}
@@ -207,17 +166,9 @@ const LimitManagement = () => {
             <FiSearch style={{ fontSize: "20px" }} />
           </SearchBarContainer>
         </FilterContainer>
-        <ButtonGroup>
-          <IconButton onClick={handleDownloadImage}>
-            <IoMdDownload style={{ fontSize: "20px", fontWeight: "700" }} />
-          </IconButton>
-          <IconButton>
-            <RiFileExcel2Fill style={{ fontSize: "20px", fontWeight: "700" }} />
-          </IconButton>
-          <IconButton>
-            <TbMailFilled style={{ fontSize: "20px", fontWeight: "700" }} />
-          </IconButton>
-        </ButtonGroup>
+        <div style={{ marginTop: "10px", fontSize: "14px", color: "#b0b0b0" }}>
+          아래의 리스트는 위의 Target match 그래프에는 영향을 주지 않습니다.
+        </div>
       </Header>
       <Content ref={ref}>
         {selectedCore && selectedSub && (

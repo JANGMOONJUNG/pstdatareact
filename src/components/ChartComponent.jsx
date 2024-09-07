@@ -32,9 +32,8 @@ const ChartComponent = ({
   activeView,
   selectedProductCategory,
   selectedProducts,
-  chartRef,
 }) => {
-  //const chartRef = useRef(null);
+  const chartRef = useRef(null);
   const chartInstanceRef = useRef(null);
   const [canvasWidth, setCanvasWidth] = useState(800); // 기본값 설정
 
@@ -54,18 +53,20 @@ const ChartComponent = ({
             fill: false,
             lineTension: 0,
           }))
-        : selectedProducts.map((product, index) => ({
-            label: product,
-            data: dataOptions[product]?.weekly || [],
-            backgroundColor: pastelColors[index % pastelColors.length],
-            borderColor: pastelColors[index % pastelColors.length].replace(
-              "0.6",
-              "1"
-            ),
-            borderWidth: 1,
-            fill: false,
-            lineTension: 0,
-          }));
+        : selectedProducts
+            .map((product, index) => ({
+              label: product,
+              data: dataOptions[product]?.weekly || [],
+              backgroundColor: pastelColors[index % pastelColors.length],
+              borderColor: pastelColors[index % pastelColors.length].replace(
+                "0.6",
+                "1"
+              ),
+              borderWidth: 1,
+              fill: false,
+              lineTension: 0,
+            }))
+            .slice(0, 12);
 
     const labels =
       activeView === "monthly"
@@ -73,7 +74,7 @@ const ChartComponent = ({
         : Array.from(
             { length: 54 },
             (_, i) => `WW${String(i + 1).padStart(2, "0")}`
-          );
+          ).slice(0, 12);
 
     const data = {
       labels,
@@ -82,7 +83,7 @@ const ChartComponent = ({
 
     const options = {
       responsive: true,
-      maintainAspectRatio: false,
+      aspectRatio: 2.5,
       scales: {
         yAxes: [
           {
@@ -94,58 +95,7 @@ const ChartComponent = ({
           },
         ],
       },
-      annotation: {
-        annotations: [
-          {
-            id: "line1",
-            type: "line",
-            mode: "horizontal",
-            scaleID: "y-axis-0",
-            value: 95,
-            borderColor: "rgba(75, 192, 192, 0.4)",
-            borderWidth: 2,
-            label: {
-              content: "양산이관 95%",
-              enabled: true,
-              position: "left",
-              xAdjust: 5,
-              backgroundColor: "rgba(0, 0, 0, 0.2)",
-            },
-          },
-          {
-            id: "line2",
-            type: "line",
-            mode: "horizontal",
-            scaleID: "y-axis-0",
-            value: 90,
-            borderColor: "rgba(192, 75, 192, 0.4)",
-            borderWidth: 2,
-            label: {
-              content: "CS qual 90%",
-              enabled: true,
-              position: "left",
-              xAdjust: 5,
-              backgroundColor: "rgba(0, 0, 0, 0.2)",
-            },
-          },
-          {
-            id: "line3",
-            type: "line",
-            mode: "horizontal",
-            scaleID: "y-axis-0",
-            value: 85,
-            borderColor: "rgba(192, 192, 75, 0.4)",
-            borderWidth: 2,
-            label: {
-              content: "개발 이관 85%",
-              enabled: true,
-              position: "left",
-              xAdjust: 5,
-              backgroundColor: "rgba(0, 0, 0, 0.2)",
-            },
-          },
-        ],
-      },
+      annotation: {},
       legend: {
         display: true,
         position: "top",
@@ -214,15 +164,15 @@ const ChartComponent = ({
     <ChartContainer>
       <div
         style={{
-          width: "1400px",
+          width: "700px",
           height: "100%",
           overflowX: "auto",
         }}
       >
         <div
           style={{
-            width: `${canvasWidth}px`,
-            height: "100%",
+            width: `680px`,
+            height: "272px",
           }}
         >
           <ChartCanvas
@@ -231,7 +181,11 @@ const ChartComponent = ({
             style={{
               maxWidth: `${canvasWidth}px`,
             }}
-            key={activeView + canvasWidth}
+            key={
+              parseInt(Math.random() * 100).toString() +
+              activeView +
+              canvasWidth
+            }
           />
         </div>
       </div>
@@ -240,3 +194,58 @@ const ChartComponent = ({
 };
 
 export default ChartComponent;
+
+/*
+
+annotations: [
+          {
+            id: "line1",
+            type: "line",
+            mode: "horizontal",
+            scaleID: "y-axis-0",
+            value: 95,
+            borderColor: "rgba(75, 192, 192, 0.4)",
+            borderWidth: 2,
+            label: {
+              content: "양산이관 95%",
+              enabled: true,
+              position: "left",
+              xAdjust: 5,
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+            },
+          },
+          {
+            id: "line2",
+            type: "line",
+            mode: "horizontal",
+            scaleID: "y-axis-0",
+            value: 90,
+            borderColor: "rgba(192, 75, 192, 0.4)",
+            borderWidth: 2,
+            label: {
+              content: "CS qual 90%",
+              enabled: true,
+              position: "left",
+              xAdjust: 5,
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+            },
+          },
+          {
+            id: "line3",
+            type: "line",
+            mode: "horizontal",
+            scaleID: "y-axis-0",
+            value: 85,
+            borderColor: "rgba(192, 192, 75, 0.4)",
+            borderWidth: 2,
+            label: {
+              content: "개발 이관 85%",
+              enabled: true,
+              position: "left",
+              xAdjust: 5,
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+            },
+          },
+        ],
+
+*/

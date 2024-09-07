@@ -40,10 +40,13 @@ const NavItem = styled.li`
 const NavLink = styled.span`
   color: #ffffff;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 24px;
   font-family: "Roboto", sans-serif;
   font-weight: 600;
   cursor: pointer;
+  letter-spacing: 2px;
+
+  border-bottom: 2px solid #222831;
 
   &.active_menu {
     color: #6986ff;
@@ -53,6 +56,9 @@ const NavLink = styled.span`
     color: #6986ff;
     border-bottom: 2px solid #6986ff;
   }
+
+  display: flex;
+  flex-direction: column;
 `;
 
 const UserInfo = styled.div`
@@ -107,31 +113,18 @@ const Header = ({ active, setActive }) => {
 
   return (
     <HeaderContainer>
-      <Title>개발PTS</Title>
+      <Title onClick={() => setActive(0)}>ONE PTS</Title>
       <Nav>
         <NavList>
-          <NavItem>
-            <NavLink
-              className={active === 0 ? "active_menu" : ""}
-              onClick={() => setActive(0)}
-            >
-              HOME
-            </NavLink>
-          </NavItem>
           <NavItem>
             <NavLink
               className={active === 1 ? "active_menu" : ""}
               onClick={() => setActive(1)}
             >
-              STATUS
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={active === 2 ? "active_menu" : ""}
-              onClick={() => setActive(2)}
-            >
-              TREND분석
+              <span>PTS</span>
+              <span style={{ fontSize: "16px", color: "#b3b3b3" }}>
+                overview
+              </span>
             </NavLink>
           </NavItem>
           <NavItem>
@@ -139,15 +132,21 @@ const Header = ({ active, setActive }) => {
               className={active === 3 ? "active_menu" : ""}
               onClick={() => setActive(3)}
             >
-              TG DGG관리
+              <span>TG</span>
+              <span style={{ fontSize: "16px", color: "#b3b3b3" }}>
+                match list
+              </span>
             </NavLink>
           </NavItem>
           <NavItem>
             <NavLink
-              className={active === 4 ? "active_menu" : ""}
-              onClick={() => setActive(4)}
+              className={active === 2 ? "active_menu" : ""}
+              onClick={() => setActive(2)}
             >
-              문의하기
+              <span>LOT</span>
+              <span style={{ fontSize: "16px", color: "#b3b3b3" }}>
+                trend moni.
+              </span>
             </NavLink>
           </NavItem>
         </NavList>

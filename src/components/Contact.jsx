@@ -172,7 +172,7 @@ const Contact = () => {
     <ContainerStatus>
       <Content>
         <Container>
-          <h2 style={{ textAlign: "center" }}>담당자</h2>
+          <h2 style={{ textAlign: "center" }}>관리자</h2>
           <div style={{ display: "flex", gap: "16px" }}>
             {profiles.map((profile, index) => (
               <UserInfo key={index} onClick={() => handleUserClick(profile)}>

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import SideNavigation3 from "./SideNavigation3";
 import TrendStep1 from "./TrendStep1";
 import TrendGather from "./TrendGather";
+import LotStatus from "./LotStatus";
 
 const ContainerStatus = styled.div`
   display: flex;
@@ -31,9 +32,9 @@ const Trend = () => {
   const renderComponent = () => {
     switch (selectedComponent) {
       case "trend-step1":
-        return <TrendStep1 />;
+        return <LotStatus />;
       case "trendGather":
-        return <TrendGather />;
+        return <LotStatus />;
       default:
         return <></>;
     }
@@ -41,12 +42,6 @@ const Trend = () => {
 
   return (
     <ContainerStatus>
-      <SideBar>
-        <SideNavigation3
-          select={selectedComponent}
-          onSelect={setSelectedComponent}
-        />
-      </SideBar>
       <Content>{renderComponent()}</Content>
     </ContainerStatus>
   );

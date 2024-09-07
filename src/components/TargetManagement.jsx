@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { product_data } from "../dummyData";
+import { product_data, TargetManageData } from "../dummyData";
 import { colorPalette } from "../color";
 import DataTable from "./DataTable";
 import { FiSearch } from "react-icons/fi";
-import { IoMdDownload } from "react-icons/io";
-import { TbMailFilled } from "react-icons/tb";
-import { RiFileExcel2Fill } from "react-icons/ri";
 import axios from "axios";
 
 const Container = styled.div`
@@ -16,9 +13,6 @@ const Container = styled.div`
   flex-direction: column;
   padding: 20px;
   box-sizing: border-box;
-  background-color: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
 `;
 
 const Header = styled.div`
@@ -46,22 +40,6 @@ const Select = styled.select`
   border-radius: 8px;
   background: #fff;
   color: ${colorPalette.deepBlue};
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 10px;
-  justify-content: end;
-`;
-
-const IconButton = styled.button`
-  background-color: #fff;
-  color: #222831;
-  border: 1px solid #222831;
-  border-radius: 12px;
-  cursor: pointer;
-  width: 36px;
-  height: 36px;
 `;
 
 const SearchBarContainer = styled.div`
@@ -96,19 +74,17 @@ const SearchInput = styled.input`
 `;
 
 const TargetManagement = () => {
-  const [selectedProductCategory, setSelectedProductCategory] = useState("CP");
-  const [selectedCore, setSelectedCore] = useState("");
-  const [selectedSub, setSelectedSub] = useState("");
+  const [selectedProductCategory, setSelectedProductCategory] = useState("LC");
+  const [selectedCore, setSelectedCore] = useState("6EJ");
+  const [selectedSub, setSelectedSub] = useState("6EK");
   const [selectedModule, setSelectedModule] = useState("");
   const [selJudgment, setSelJudgment] = useState("");
 
   const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
-    const filtered = data.filter(
+    const filtered = TargetManageData.filter(
       (item) =>
-        (selectedCore ? item.Core === selectedCore : true) &&
-        (selectedSub ? item.파생 === selectedSub : true) &&
         (selectedModule ? item.Module === selectedModule : true) &&
         (selJudgment ? item["DATA 판정"].toString() === selJudgment : true)
     );
@@ -116,71 +92,20 @@ const TargetManagement = () => {
     setFilteredData(filtered);
   }, [selectedCore, selectedSub, selectedModule, selJudgment]);
 
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("http://127.0.0.1:4001/targetdgg/data")
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((e) => {
-        console.log("error", e);
-      });
-  }, []);
-
-  const uniqueModules = Array.from(new Set(data.map((item) => item.Module)));
-
   return (
     <Container>
       <Header>
         <FilterContainer>
-          <label>테크:</label>
-          <Select
-            value={selectedProductCategory}
-            onChange={(e) => {
-              setSelectedProductCategory(e.target.value);
-              setSelectedCore("");
-              setSelectedSub("");
-            }}
-          >
-            {Object.keys(product_data).map((tech) => (
-              <option key={tech} value={tech}>
-                {tech}
-              </option>
-            ))}
-          </Select>
-          <label>코어:</label>
-          <Select
-            value={selectedCore}
-            onChange={(e) => setSelectedCore(e.target.value)}
-          >
-            <option value="">전체</option>
-            {product_data[selectedProductCategory].options.map((core) => (
-              <option key={core} value={core}>
-                {core}
-              </option>
-            ))}
-          </Select>
-          <label>파생:</label>
-          <Select
-            value={selectedSub}
-            onChange={(e) => setSelectedSub(e.target.value)}
-          >
-            <option value="">전체</option>
-            {product_data[selectedProductCategory].options.map((sub) => (
-              <option key={sub} value={sub}>
-                {sub}
-              </option>
-            ))}
-          </Select>
+          <h3 style={{ margin: "0px" }}>Target match list</h3>
           <label>모듈:</label>
           <Select
             value={selectedModule}
             onChange={(e) => setSelectedModule(e.target.value)}
           >
             <option value="">전체</option>
-            {uniqueModules.map((module) => (
+            {Array.from(
+              new Set(TargetManageData.map((item) => item.Module))
+            ).map((module) => (
               <option key={module} value={module}>
                 {module}
               </option>
@@ -205,17 +130,6 @@ const TargetManagement = () => {
             <FiSearch style={{ fontSize: "20px" }} />
           </SearchBarContainer>
         </FilterContainer>
-        <ButtonGroup>
-          <IconButton>
-            <IoMdDownload style={{ fontSize: "20px", fontWeight: "700" }} />
-          </IconButton>
-          <IconButton>
-            <RiFileExcel2Fill style={{ fontSize: "20px", fontWeight: "700" }} />
-          </IconButton>
-          <IconButton>
-            <TbMailFilled style={{ fontSize: "20px", fontWeight: "700" }} />
-          </IconButton>
-        </ButtonGroup>
       </Header>
       <Content>
         <DataTable data={filteredData} key={filteredData.length} />

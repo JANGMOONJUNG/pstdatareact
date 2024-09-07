@@ -8,7 +8,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 Chart.plugins.unregister(ChartDataLabels);
 
 const ChartContainer = styled.div`
-  width: 45%;
+  width: 48%;
   overflow-x: auto;
 `;
 

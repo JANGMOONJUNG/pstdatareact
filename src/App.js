@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -7,7 +7,8 @@ import Ticker from "./components/Ticker";
 import Status from "./components/Status";
 import TgDgg from "./components/TgDgg";
 import Trend from "./components/Trend";
-import Contact from "./Contact";
+import Contact from "./components/Contact";
+import axios from "axios";
 
 function App() {
   // menu 구분용
@@ -33,7 +34,6 @@ function App() {
   return (
     <div className="App">
       <Header active={active} setActive={setActive} />
-      {active != 0 && <Ticker />}
       {getContent()}
       <Footer />
     </div>

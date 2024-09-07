@@ -36,17 +36,31 @@ const ChartComponent2 = ({
 
     const datasets = [
       {
-        label: "Before",
-        data: Object.values(dataOptions[dataKey]),
+        label: "One PTS",
+        data: ["98.31", "100", "96", "98.68", "100", "98.47", "93.33"],
         backgroundColor: "rgba(75, 192, 192, 0.6)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
       {
-        label: "Present",
-        data: Object.values(dataOptions[dataKeyPresent]),
-        backgroundColor: "rgba(192, 75, 192, 0.6)",
-        borderColor: "rgba(192, 75, 192, 1)",
+        label: "Control out",
+        data: ["99.44", "100", "100", "98.68", "100", "100", "100"],
+        backgroundColor: "rgba(192, 75, 142, 0.6)",
+        borderColor: "rgba(192, 75, 142, 1)",
+        borderWidth: 1,
+      },
+      {
+        label: "OCI Centering",
+        data: ["97.75", "100", "96", "98.59", "100", "96.15", "93.33"],
+        backgroundColor: "rgba(192, 125, 192, 0.6)",
+        borderColor: "rgba(192, 125, 192, 1)",
+        borderWidth: 1,
+      },
+      {
+        label: "Scatter",
+        data: ["99.72", "100", "96", "99.33", "100", "100", "100"],
+        backgroundColor: "rgba(152, 75, 192, 0.6)",
+        borderColor: "rgba(152, 75, 192, 1)",
         borderWidth: 1,
       },
     ];
@@ -76,9 +90,8 @@ const ChartComponent2 = ({
             yAxes: [
               {
                 ticks: {
-                  beginAtZero: true,
                   suggestedMax: 100,
-                  suggestedMin: 0,
+                  suggestedMin: 80,
                   callback: function (value) {
                     return value + "%"; // y축 라벨에 % 추가
                   },

@@ -4,13 +4,12 @@ import { colorPalette } from "../color";
 import { FaCheck } from "react-icons/fa";
 
 const TableContainer = styled.div`
-  margin-top: 20px;
-  width: 1600px;
+  width: 1320px;
   overflow-x: auto;
 `;
 
 const ListWrapper = styled.div`
-  margin-top: 20px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;

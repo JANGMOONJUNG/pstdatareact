@@ -4,13 +4,10 @@ import { colorPalette } from "../color";
 import { FaCheck } from "react-icons/fa";
 import TargetModal from "./TargetModal";
 
-const TableContainer = styled.div`
-  margin-top: 20px;
-  height: 400px;
-`;
+const TableContainer = styled.div``;
 
 const ListWrapper = styled.div`
-  margin-top: 20px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -28,7 +25,7 @@ const ListHeader = styled.div`
 `;
 
 const ListContainer = styled.div`
-  height: 480px;
+  max-height: 480px;
   overflow-y: auto;
 
   &::-webkit-scrollbar {

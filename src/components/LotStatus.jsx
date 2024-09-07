@@ -9,7 +9,7 @@ import { RiFileExcel2Fill } from "react-icons/ri";
 import ChartComponent5 from "./ChartComponent5";
 
 const Container = styled.div`
-  width: 100%;
+  width: 1640px;
   height: 100%;
   display: flex;
   flex-direction: column;
